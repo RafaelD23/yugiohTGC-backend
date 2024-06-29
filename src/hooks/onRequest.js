@@ -19,7 +19,6 @@ const onRequest = async (request, reply) => {
       if(!jwt) return reply.code(401).send({error: true, message: "Invalid token!"}); 
       
       request.user = jwt;
-      console.log("😊", request.user);
   }
 
   await logRequest(request);
