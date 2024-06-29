@@ -5,7 +5,7 @@ const router = [
   {
     prefix: "account",
     route: ACCOUNT_ROUTES,
-    public: ["/account/handle-login"]
+    public: ["/account/handle-login", "/account/handle-register"]
   },
   {
     prefix: "cards",

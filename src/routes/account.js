@@ -5,8 +5,6 @@ import { generateToken } from "../utils/jwt.js";
 export default async function ACCOUNT_ROUTES(fastify, opts) {
   fastify.get("/", async (request, reply) => {
     try {
-      // const { data } = request.body;
-
       const hash = generateHash('nos');
 
       return {
@@ -22,6 +20,48 @@ export default async function ACCOUNT_ROUTES(fastify, opts) {
       };
     }
   });
+
+  fastify.post("/handle-register", account["/handle-register"], async (request, reply) => {
+    try {
+      const {data: {name, username, password}} = request.body;
+
+      const existentUsername = await prisma.Clients.findUnique({
+        where: {
+          username
+        }
+      })
+
+      if(existentUsername) return reply.code(409).send({
+          error: true,
+          message: "User already exists!",
+          data: null
+        })
+      
+
+      const hashedPassword = generateHash(password);
+
+      const registerCliente = await prisma.Clients.create({
+        data: {
+          name,
+          username,
+          password: hashedPassword
+        }
+      })
+
+      return reply.code(201).send({
+        error: false,
+        message: `User ${username} created!`,
+      })
+
+    } catch (error) {
+      return {
+        error: true,
+        message: error.message,
+        errorObj: { ...error },
+        data: null,
+      };
+    }
+  } )
 
   fastify.post("/handle-login", account["/handle-login"], async (request, reply) => {
     try {
@@ -62,4 +102,5 @@ export default async function ACCOUNT_ROUTES(fastify, opts) {
       };
     }
   })
+
 }
