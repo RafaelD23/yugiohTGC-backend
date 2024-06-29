@@ -4,9 +4,9 @@ module.exports = {
   apps: [
     {
       name: "server",
-      script: "index.js",
+      script: "index.js | pino-pretty",
       watch: true,
-      node_args: "-r dotenv/config"
-    }
-  ]
-}
+      node_args: "-r dotenv/config",
+    },
+  ],
+};
