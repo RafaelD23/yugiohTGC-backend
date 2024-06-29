@@ -1,6 +1,7 @@
 import account from "./schemas/account.js";
 import prisma from "../database/prismaCliente.js";
 import { compareHash, generateHash } from "../utils/crypto.js";
+import { generateToken } from "../utils/jwt.js";
 export default async function ACCOUNT_ROUTES(fastify, opts) {
   fastify.get("/", async (request, reply) => {
     try {
@@ -41,12 +42,15 @@ export default async function ACCOUNT_ROUTES(fastify, opts) {
           data: null
         })
       }
-
+      
+      delete dataClient.password;
+      const jwt_token = generateToken(dataClient);
+  
       return {
         error: false,
         data: {
-          username
-        },
+          username,
+          token: jwt_token},
       };
     } catch (error) {
     
