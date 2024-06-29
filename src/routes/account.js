@@ -1,13 +1,16 @@
 import account from "./schemas/account.js";
 import prisma from "../database/prismaCliente.js";
+import { compareHash, generateHash } from "../utils/crypto.js";
 export default async function ACCOUNT_ROUTES(fastify, opts) {
   fastify.get("/", async (request, reply) => {
     try {
-      const { data } = request.body;
+      // const { data } = request.body;
+
+      const hash = generateHash('nos');
 
       return {
         error: false,
-        data: null,
+        data: hash,
       };
     } catch (error) {
       return {
@@ -29,11 +32,24 @@ export default async function ACCOUNT_ROUTES(fastify, opts) {
         }
       })
 
+      const equalPassword = compareHash(password, dataClient.password);
+      
+      if(!equalPassword) {
+       return reply.code(401).send({
+          error: true,
+          message: "Invalid password",
+          data: null
+        })
+      }
+
       return {
         error: false,
-        data: dataClient,
+        data: {
+          username
+        },
       };
     } catch (error) {
+    
       return {
         error: true,
         message: error.message,
