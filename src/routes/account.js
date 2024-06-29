@@ -36,7 +36,6 @@ export default async function ACCOUNT_ROUTES(fastify, opts) {
           message: "User already exists!",
           data: null
         })
-      
 
       const hashedPassword = generateHash(password);
 

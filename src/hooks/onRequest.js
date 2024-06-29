@@ -1,6 +1,6 @@
 import { getPublicRoutes } from "../routes/index.js";
 import { validateToken } from "../utils/jwt.js";
-
+import logRequest from "./logRequest.js";
 const onRequest = async (request, reply) => {
   const {url} = request;
   
@@ -17,7 +17,12 @@ const onRequest = async (request, reply) => {
       const jwt = validateToken(token);
 
       if(!jwt) return reply.code(401).send({error: true, message: "Invalid token!"}); 
+      
+      request.user = jwt;
+      console.log("😊", request.user);
   }
+
+  await logRequest(request);
 }
 
 export default onRequest;
