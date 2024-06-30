@@ -70,27 +70,68 @@ export default async function CARDS_ROUTES(fastify, options) {
     }
   });
 
-  fastify.post("/add-to-client", cards["/add-to-client"],  async (request, reply) => {
+  fastify.post(
+    "/add-to-client",
+    cards["/add-to-client"],
+    async (request, reply) => {
+      try {
+        const {
+          data: { cards },
+        } = request.body;
+        const {
+          user: {
+            payload: { uuid },
+          },
+        } = request;
+
+        cards.map(async (id) => {
+          const registerCardToUser = await prisma.ClientsCards.create({
+            data: {
+              cardId: id,
+              clientsUuid: uuid,
+            },
+          });
+        });
+
+        return reply.code(201).send({
+          error: false,
+          message: "Card added successfully",
+          data: cards,
+        });
+      } catch (error) {
+        return {
+          error: true,
+          message: error.message,
+          errorObj: { ...error },
+          data: null,
+        };
+      }
+    }
+  );
+
+  fastify.get("/info/:cardId", async (request, reply) => {
     try {
-      const {data:{cards}} = request.body;
-      const {user: {payload: {uuid}}} = request;
+      const { cardId } = request.params;
 
-      cards.map(async (id) => {
-        const registerCardToUser = await prisma.ClientsCards.create({
-          data: {
-            cardId: id,
-            clientsUuid: uuid
-          }
-        })
-      })
- 
-      return reply.code(201).send({
+      const cardInChace = CardsMap.get(cardId);
+
+      if (cardInChace)
+        return {
+          error: false,
+          isCached: true,
+          data: { card: cardInChace },
+        };
+
+      const url = process.env.YGOPRO_API_URL + "?id=" + cardId;
+      const { data } = await axios.get(url);
+      CardsMap.set(cardId, data.data);
+
+      return {
         error: false,
-        message: "Card added successfully",
-        data: cards  
-      })
-
-      } catch(error) {
+        isCached: false,
+        data: { card: data.data },
+      };
+    } catch (error) {
       return {
         error: true,
         message: error.message,
@@ -98,5 +139,64 @@ export default async function CARDS_ROUTES(fastify, options) {
         data: null,
       };
     }
-  })
+  });
+
+  fastify.post(
+    "/request-trade",
+    cards["/request-trade"],
+    async (request, reply) => {
+      try {
+        const {
+          data: {
+            clients: { uuid: toUuid },
+            cards,
+          },
+        } = request.body;
+
+        const { uuid: clientUuid } = request.user.payload;
+
+        const tradeOffer = await prisma.TradeOffer.create({
+          data: {
+            sender: clientUuid,
+            reciever: toUuid,
+            status: "OPEN",
+          },
+        });
+
+        const { uuid: tradeOfferUuid } = tradeOffer;
+
+        function organizeCards(cards, tradeOfferUuid) {
+          let result = [];
+
+          for (const type in cards) {
+            const cardArray = cards[type];
+            const organizedCards = cardArray.map((card) => ({
+              action: type.toUpperCase(),
+              card,
+              tradeOfferUuid,
+            }));
+            result = result.concat(organizedCards);
+          }
+
+          return result;
+        }
+
+        const tradeOfferCards = await prisma.TradeOfferCards.createMany({
+          data: organizeCards(cards, tradeOfferUuid),
+        });
+
+        return {
+          error: false,
+          data: { ...tradeOfferCards },
+        };
+      } catch (error) {
+        return {
+          error: true,
+          message: error.message,
+          errorObj: { ...error },
+          data: null,
+        };
+      }
+    }
+  );
 }

@@ -72,6 +72,14 @@ export default async function ACCOUNT_ROUTES(fastify, opts) {
         }
       })
 
+      if(!dataClient) {
+        return reply.code(401).send({
+          error: true,
+          message: "Client not found",
+          data: null
+        })
+      }
+
       const equalPassword = compareHash(password, dataClient.password);
       
       if(!equalPassword) {

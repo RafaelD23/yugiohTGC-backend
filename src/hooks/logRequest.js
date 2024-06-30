@@ -1,17 +1,22 @@
-import prisma from "../database/prismaCliente.js"
+import prisma from "../database/prismaCliente.js";
 
+const logRequest = async ({ user = null, url, method, body, params }) => {
+  let clientsUuid = null;
 
-const logRequest = async ({user, url, method, body, params}) => {
+  if (user) {
+    const { payload } = user;
+    clientsUuid = payload.uuid;
+  }
 
   const createLogRequest = await prisma.LogRequests.create({
     data: {
-      clientsUuid: user.payload.uuid || null,
+      clientsUuid,
       route: url,
       method,
       body: JSON.stringify(body) || null,
-      params: JSON.stringify(params) || null
-    }
-  })
-}
+      params: JSON.stringify(params) || null,
+    },
+  });
+};
 
 export default logRequest;
