@@ -154,16 +154,16 @@ export default async function CARDS_ROUTES(fastify, options) {
         } = request.body;
 
         const { uuid: clientUuid } = request.user.payload;
-        // Cria a oferta de troca
-        // const tradeOffer = await prisma.TradeOffer.create({
-        //   data: {
-        //     sender: clientUuid,
-        //     reciever: toUuid,
-        //     status: "OPEN",
-        //   },
-        // });
 
-        // const { uuid: tradeOfferUuid } = tradeOffer;
+        const tradeOffer = await prisma.TradeOffer.create({
+          data: {
+            sender: clientUuid,
+            reciever: toUuid,
+            status: "OPEN",
+          },
+        });
+
+        const { uuid: tradeOfferUuid } = tradeOffer;
 
         function organizeCards(cards, tradeOfferUuid) {
           let result = [];
@@ -171,7 +171,7 @@ export default async function CARDS_ROUTES(fastify, options) {
           for (const type in cards) {
             const cardArray = cards[type];
             const organizedCards = cardArray.map((card) => ({
-              action: type.toLocaleLowerCase(),
+              action: type.toUpperCase(),
               card,
               tradeOfferUuid,
             }));
@@ -182,12 +182,12 @@ export default async function CARDS_ROUTES(fastify, options) {
         }
 
         const tradeOfferCards = await prisma.TradeOfferCards.createMany({
-          data: organizeCards(cards, "4e0dc2d3-8b41-4d91-b56f-8d73621a11b6"),
+          data: organizeCards(cards, tradeOfferUuid),
         });
 
         return {
           error: false,
-          data: tradeOfferCards,
+          data: { ...tradeOfferCards },
         };
       } catch (error) {
         return {
