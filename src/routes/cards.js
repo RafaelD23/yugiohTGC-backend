@@ -143,7 +143,7 @@ export default async function CARDS_ROUTES(fastify, options) {
 
   fastify.post(
     "/request-trade",
-    cards["/offer-trade"],
+    cards["/request-trade"],
     async (request, reply) => {
       try {
         const {
