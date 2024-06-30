@@ -58,8 +58,9 @@ model TradeOffer {
   status    TRADE_OFFER_STATUS
   createdAt DateTime           @default(now())
 
-  ClientsSender   Clients? @relation(name: "ClientsSender", fields: [sender], references: [uuid])
-  ClientsReciever Clients? @relation(name: "ClientsReciever", fields: [reciever], references: [uuid])
+  cards           TradeOfferCards[]
+  ClientsSender   Clients?          @relation(name: "ClientsSender", fields: [sender], references: [uuid])
+  ClientsReciever Clients?          @relation(name: "ClientsReciever", fields: [reciever], references: [uuid])
 }
 
 model TradeOfferCards {
@@ -67,6 +68,9 @@ model TradeOfferCards {
   action    TRADE_ACTION
   card      Int
   createdAt DateTime     @default(now())
+
+  TradeOffer     TradeOffer? @relation(fields: [tradeOfferUuid], references: [uuid])
+  tradeOfferUuid String?
 }
 
 enum TRADE_OFFER_STATUS {

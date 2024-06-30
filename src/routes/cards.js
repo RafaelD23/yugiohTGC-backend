@@ -149,17 +149,45 @@ export default async function CARDS_ROUTES(fastify, options) {
         const {
           data: {
             clients: { uuid: toUuid },
-            cards: { from: cardsFrom, to: cardsTo },
+            cards,
           },
         } = request.body;
 
         const { uuid: clientUuid } = request.user.payload;
+        // Cria a oferta de troca
+        // const tradeOffer = await prisma.TradeOffer.create({
+        //   data: {
+        //     sender: clientUuid,
+        //     reciever: toUuid,
+        //     status: "OPEN",
+        //   },
+        // });
 
-        // const sendTradeOffer = await prisma.
+        // const { uuid: tradeOfferUuid } = tradeOffer;
+
+        function organizeCards(cards, tradeOfferUuid) {
+          let result = [];
+
+          for (const type in cards) {
+            const cardArray = cards[type];
+            const organizedCards = cardArray.map((card) => ({
+              action: type.toLocaleLowerCase(),
+              card,
+              tradeOfferUuid,
+            }));
+            result = result.concat(organizedCards);
+          }
+
+          return result;
+        }
+
+        const tradeOfferCards = await prisma.TradeOfferCards.createMany({
+          data: organizeCards(cards, "4e0dc2d3-8b41-4d91-b56f-8d73621a11b6"),
+        });
 
         return {
           error: false,
-          data: null,
+          data: tradeOfferCards,
         };
       } catch (error) {
         return {
