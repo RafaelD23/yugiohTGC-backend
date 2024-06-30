@@ -14,13 +14,14 @@ datasource db {
 }
 
 model Clients {
-  uuid      String        @id @default(uuid())
+  uuid      String         @id @default(uuid())
   name      String
-  username  String        @unique
+  username  String         @unique
   password  String
-  createdAt DateTime      @default(now())
-  status    ClientStatus  @default(YES)
+  createdAt DateTime       @default(now())
+  status    ClientStatus   @default(YES)
   logs      LogRequests[]
+  cards     ClientsCards[]
 }
 
 enum ClientStatus {
@@ -37,4 +38,12 @@ model LogRequests {
   createdAt   DateTime @default(now())
   Clients     Clients? @relation(fields: [clientsUuid], references: [uuid])
   clientsUuid String?
+}
+
+model ClientsCards {
+  uuid        String   @id @default(uuid())
+  cardId      Int
+  Clients     Clients? @relation(fields: [clientsUuid], references: [uuid])
+  clientsUuid String?
+  createdAt   DateTime @default(now())
 }

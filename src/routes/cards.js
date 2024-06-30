@@ -1,5 +1,7 @@
 import axios from "axios";
 import CardsMap from "../cards.map.js";
+import prisma from "../database/prismaCliente.js";
+import cards from "./schemas/cards.js";
 
 export default async function CARDS_ROUTES(fastify, options) {
   fastify.get("/", async (request, reply) => {
@@ -67,6 +69,45 @@ export default async function CARDS_ROUTES(fastify, options) {
       };
     }
   });
+
+  fastify.post(
+    "/add-to-client",
+    cards["/add-to-client"],
+    async (request, reply) => {
+      try {
+        const {
+          data: { cards },
+        } = request.body;
+        const {
+          user: {
+            payload: { uuid },
+          },
+        } = request;
+
+        cards.map(async (id) => {
+          const registerCardToUser = await prisma.ClientsCards.create({
+            data: {
+              cardId: id,
+              clientsUuid: uuid,
+            },
+          });
+        });
+
+        return reply.code(201).send({
+          error: false,
+          message: "Card added successfully",
+          data: cards,
+        });
+      } catch (error) {
+        return {
+          error: true,
+          message: error.message,
+          errorObj: { ...error },
+          data: null,
+        };
+      }
+    }
+  );
 
   fastify.get("/info/:cardId", async (request, reply) => {
     try {
