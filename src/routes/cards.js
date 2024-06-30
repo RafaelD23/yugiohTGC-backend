@@ -140,4 +140,35 @@ export default async function CARDS_ROUTES(fastify, options) {
       };
     }
   });
+
+  fastify.post(
+    "/request-trade",
+    cards["/offer-trade"],
+    async (request, reply) => {
+      try {
+        const {
+          data: {
+            clientsUuid: toClientsUuid,
+            cards: { from: cardsFrom, to: cardsTo },
+          },
+        } = request.body;
+
+        const { uuid: clientUuid } = request.user.payload;
+
+        // const sendTradeOffer = await prisma.
+
+        return {
+          error: false,
+          data: null,
+        };
+      } catch (error) {
+        return {
+          error: true,
+          message: error.message,
+          errorObj: { ...error },
+          data: null,
+        };
+      }
+    }
+  );
 }

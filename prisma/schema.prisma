@@ -47,3 +47,22 @@ model ClientsCards {
   clientsUuid String?
   createdAt   DateTime @default(now())
 }
+
+model TradeOffer {
+  uuid      String   @id @default(uuid())
+  from      String //from who went the trade
+  to        String //to who went the trade
+  createdAt DateTime @default(now())
+}
+
+model TradeOfferCards {
+  uuid      String       @id @default(uuid())
+  action    TRADE_ACTION
+  card      Int
+  createdAt DateTime     @default(now())
+}
+
+enum TRADE_ACTION {
+  FROM
+  TO
+}
