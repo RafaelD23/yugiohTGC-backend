@@ -30,6 +30,27 @@ const trades = {
       },
     },
   },
+  "/cards-from-trade": {
+    schema: {
+      body: {
+        type: "object",
+        required: ["data"],
+        properties: {
+          data: {
+            type: "object",
+            required: ["trades"],
+            properties: {
+              trades: {
+                type: "object",
+                required: ["uuid"],
+                properties: { uuid: { type: "string" } },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
 };
 
 export default trades;

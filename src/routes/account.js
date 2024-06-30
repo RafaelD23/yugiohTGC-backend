@@ -156,45 +156,45 @@ export default async function ACCOUNT_ROUTES(fastify, opts) {
         data: null,
       };
     }
-  })
+  });
 
-  
-  fastify.post("/view-inventory", async(request, reply) => {
+  fastify.post("/view-inventory", async (request, reply) => {
     try {
-      console.log("🤭", request.user)
-      const { user: { payload: { uuid }, }, } = request;
-
+      const {
+        user: {
+          payload: { uuid },
+        },
+      } = request;
 
       const getAllInventoryCards = await prisma.ClientsCards.findMany({
         where: {
-          clientsUuid: uuid
-        }
-      })
+          clientsUuid: uuid,
+        },
+      });
 
-      if(getAllInventoryCards.length == 0 || !getAllInventoryCards){
+      if (getAllInventoryCards.length == 0 || !getAllInventoryCards) {
         return reply.code(204).send({
           error: false,
           message: "No cards found!",
-          data: null
-        })
+          data: null,
+        });
       }
 
       return {
         error: false,
         data: {
           cards: {
-            getAllInventoryCards
-          }
-        }
-      }
-
-    } catch(error) {
+            getAllInventoryCards,
+          },
+        },
+      };
+    } catch (error) {
       return {
         error: true,
         message: error.message,
-        errorObj: {...error},
+        errorObj: { ...error },
         data: null,
-      }
+      };
     }
-  })
+  });
 }
