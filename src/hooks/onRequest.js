@@ -19,7 +19,9 @@ const onRequest = async (request, reply) => {
 
     const jwt = validateToken(token);
 
-    if (!jwt)
+    console.error("😊", jwt)
+
+    if (!jwt.valid)
       return reply.code(401).send({ error: true, message: "Invalid token!" });
 
     request.user = jwt;
