@@ -67,4 +67,36 @@ export default async function CARDS_ROUTES(fastify, options) {
       };
     }
   });
+
+  fastify.get("/info/:cardId", async (request, reply) => {
+    try {
+      const { cardId } = request.params;
+
+      const cardInChace = CardsMap.get(cardId);
+
+      if (cardInChace)
+        return {
+          error: false,
+          isCached: true,
+          data: { card: cardInChace },
+        };
+
+      const url = process.env.YGOPRO_API_URL + "?id=" + cardId;
+      const { data } = await axios.get(url);
+      CardsMap.set(cardId, data.data);
+
+      return {
+        error: false,
+        isCached: false,
+        data: { card: data.data },
+      };
+    } catch (error) {
+      return {
+        error: true,
+        message: error.message,
+        errorObj: { ...error },
+        data: null,
+      };
+    }
+  });
 }
