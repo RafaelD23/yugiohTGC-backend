@@ -1,0 +1,116 @@
+[
+  {
+    "v": 2,
+    "name": "YGOTCG",
+    "folders": [
+      {
+        "v": 2,
+        "name": "ACCOUNT",
+        "folders": [],
+        "requests": [
+          {
+            "name": "LOGIN",
+            "preRequestScript": "",
+            "testScript": "",
+            "method": "POST",
+            "auth": {
+              "authActive": true,
+              "authType": "inherit"
+            },
+            "params": [],
+            "headers": [],
+            "body": {
+              "body": "{\n  \"data\": {\n    \"username\": \"devfurioso\",\n    \"password\": \"masteraccess2313\"\n  }\n}",
+              "contentType": "application/json"
+            },
+            "endpoint": "<<ACCOUNT>>/handle-login",
+            "v": "5",
+            "requestVariables": []
+          },
+          {
+            "requestVariables": [],
+            "endpoint": "<<ACCOUNT>>/handle-register",
+            "testScript": "",
+            "auth": {
+              "authActive": true,
+              "authType": "inherit"
+            },
+            "method": "POST",
+            "params": [],
+            "headers": [],
+            "preRequestScript": "",
+            "body": {
+              "contentType": "application/json",
+              "body": "{\n  \"data\": {\n    \"name\": \"TESTE DEV FURIOSO\",\n    \"username\": \"devfurioso\",\n    \"password\": \"masteraccess2313\"\n  }\n}"
+            },
+            "name": "REGISTER",
+            "v": "5"
+          }
+        ],
+        "auth": {
+          "authType": "inherit",
+          "authActive": true
+        },
+        "headers": []
+      },
+      {
+        "v": 2,
+        "name": "CARDS",
+        "folders": [],
+        "requests": [
+          {
+            "endpoint": "<<CARDS>>/info/86988864",
+            "body": {
+              "body": null,
+              "contentType": null
+            },
+            "preRequestScript": "",
+            "v": "5",
+            "method": "GET",
+            "name": "INFO",
+            "testScript": "",
+            "headers": [],
+            "auth": {
+              "authType": "bearer",
+              "authActive": true,
+              "token": "<<JWT>>"
+            },
+            "params": [],
+            "requestVariables": []
+          },
+          {
+            "endpoint": "<<CARDS>>/add-to-client",
+            "body": {
+              "body": "{\n  \"data\": {\n    \"cards\": [86988864, 6983839]\n  }\n}",
+              "contentType": "application/json"
+            },
+            "preRequestScript": "",
+            "v": "5",
+            "method": "POST",
+            "name": "ADD TO CLIENT",
+            "testScript": "",
+            "headers": [],
+            "auth": {
+              "authType": "bearer",
+              "authActive": true,
+              "token": "<<JWT>>"
+            },
+            "params": [],
+            "requestVariables": []
+          }
+        ],
+        "auth": {
+          "authActive": true,
+          "authType": "inherit"
+        },
+        "headers": []
+      }
+    ],
+    "requests": [],
+    "auth": {
+      "authActive": true,
+      "authType": "none"
+    },
+    "headers": []
+  }
+]
