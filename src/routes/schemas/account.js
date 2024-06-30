@@ -40,6 +40,12 @@ const account = {
         }
       }
     }
+  },
+  
+  "/response-trade-offer": {
+    schema: {
+      
+    },
   }
 }
 

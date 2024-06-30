@@ -113,13 +113,13 @@ export default async function CARDS_ROUTES(fastify, options) {
     try {
       const { cardId } = request.params;
 
-      const cardInChace = CardsMap.get(cardId);
+      const cardInCache = CardsMap.get(cardId);
 
-      if (cardInChace)
+      if (cardInCache)
         return {
           error: false,
           isCached: true,
-          data: { card: cardInChace },
+          data: { card: cardInCache },
         };
 
       const url = process.env.YGOPRO_API_URL + "?id=" + cardId;
