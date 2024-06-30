@@ -148,7 +148,7 @@ export default async function CARDS_ROUTES(fastify, options) {
       try {
         const {
           data: {
-            clientsUuid: toClientsUuid,
+            clients: { uuid: toUuid },
             cards: { from: cardsFrom, to: cardsTo },
           },
         } = request.body;

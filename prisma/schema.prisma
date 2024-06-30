@@ -22,6 +22,9 @@ model Clients {
   status    ClientStatus   @default(YES)
   logs      LogRequests[]
   cards     ClientsCards[]
+
+  tradesSended   TradeOffer[] @relation(name: "ClientsSender")
+  tradesRecieved TradeOffer[] @relation(name: "ClientsReciever")
 }
 
 enum ClientStatus {
@@ -49,10 +52,14 @@ model ClientsCards {
 }
 
 model TradeOffer {
-  uuid      String   @id @default(uuid())
-  from      String //from who went the trade
-  to        String //to who went the trade
-  createdAt DateTime @default(now())
+  uuid      String             @id @default(uuid())
+  sender    String //from who went the trade
+  reciever  String //to who went the trade
+  status    TRADE_OFFER_STATUS
+  createdAt DateTime           @default(now())
+
+  ClientsSender   Clients? @relation(name: "ClientsSender", fields: [sender], references: [uuid])
+  ClientsReciever Clients? @relation(name: "ClientsReciever", fields: [reciever], references: [uuid])
 }
 
 model TradeOfferCards {
@@ -60,6 +67,12 @@ model TradeOfferCards {
   action    TRADE_ACTION
   card      Int
   createdAt DateTime     @default(now())
+}
+
+enum TRADE_OFFER_STATUS {
+  OPEN
+  ACCEPTED
+  REFUSED
 }
 
 enum TRADE_ACTION {
