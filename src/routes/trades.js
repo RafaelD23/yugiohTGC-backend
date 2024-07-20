@@ -16,6 +16,20 @@ export async function TRADES_ROUTES(fastify, options) {
 
         const { uuid: clientUuid } = request.user.payload;
 
+        const clienteExists = await prisma.clients.findUnique({
+          where : { 
+            uuid: toUuid
+          }
+        }) 
+
+        if(!clienteExists){
+          return reply.code(401).send({
+              error: true,
+              message: "Receiver not found!",
+              data: null
+          })
+        }
+
         const tradeOffer = await prisma.TradeOffer.create({
           data: {
             sender: clientUuid,
