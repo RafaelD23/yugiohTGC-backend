@@ -165,7 +165,6 @@ export default async function ACCOUNT_ROUTES(fastify, opts) {
           payload: { uuid },
         },
       } = request;
-      const { user: { payload: { uuid }, }, } = request;
 
 
       const getAllInventoryCards = await prisma.ClientsCards.findMany({
