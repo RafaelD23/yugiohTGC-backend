@@ -165,6 +165,8 @@ export default async function ACCOUNT_ROUTES(fastify, opts) {
           payload: { uuid },
         },
       } = request;
+      const { user: { payload: { uuid }, }, } = request;
+
 
       const getAllInventoryCards = await prisma.ClientsCards.findMany({
         where: {
@@ -197,4 +199,19 @@ export default async function ACCOUNT_ROUTES(fastify, opts) {
       };
     }
   });
-}
+  
+  }
+  fastify.put("/response-trade-offer", account["/response-trade-offer"], async(request, response) => {
+
+    const {data: {trade: {uuid: tradeUuid, response: tradeAction}}} = request.body;
+
+    const tradeCards = await prisma.TradeOfferCards.findMany({
+      where: {
+        uuid: tradeUuid,
+      }
+    })
+
+    console.log(tradeCards)
+
+  })
+
