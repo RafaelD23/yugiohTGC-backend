@@ -1,10 +1,8 @@
 {
   "name": "yugiohTGC-backend",
-  "packageManager": "yarn@4.2.2",
   "type": "module",
   "main": "index.js",
   "engines": {
-    "yarn": "^4.2.2",
     "node": "20.14.0"
   },
   "scripts": {
