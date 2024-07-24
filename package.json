@@ -9,10 +9,11 @@
   },
   "scripts": {
     "start": "node index.js",
-    "dev": "node --watch index.js | pino-pretty",
+    "dev": "tsx watch index.ts | pino-pretty",
     "pm2": "pm2 start pm2.config.cjs",
     "populate-db": "node ./src/populate-db.js",
-    "migrate": "cross-env yarn prisma migrate dev --name %npm_config_name%"
+    "migrate": "cross-env yarn prisma migrate dev --name %npm_config_name%",
+    "build": "tsc"
   },
   "dependencies": {
     "@prisma/client": "^5.16.1",
@@ -23,7 +24,10 @@
     "fastify": "^4.28.0"
   },
   "devDependencies": {
+    "@types/node": "^20.14.12",
     "pino-pretty": "^11.2.1",
-    "prisma": "^5.16.1"
+    "prisma": "^5.16.1",
+    "tsx": "^4.16.2",
+    "typescript": "^5.5.4"
   }
 }
