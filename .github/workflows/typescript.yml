@@ -6,23 +6,18 @@ on:
       - refactor/typescript
 
 jobs:
-  setup:
-    name: Setup nodejs
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20.14.0
-          cache: "yarn"
-
   install:
-    needs: setup
     name: Install Dependencies
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
+      - name: Setup Nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.14.0
+          cache: "yarn"
 
       - name: Cache node_modules
         uses: actions/cache@v3
