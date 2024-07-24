@@ -14,8 +14,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20.14.0
+          cache: "yarn"
 
   install:
+    needs: setup
     name: Install Dependencies
     runs-on: ubuntu-latest
     steps:
