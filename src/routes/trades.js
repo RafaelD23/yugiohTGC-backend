@@ -1,7 +1,46 @@
 import prisma from "../database/prismaCliente.js";
+import { getClientInfoByUUID } from "../models/client.js";
 import trades from "./schemas/trades.js";
 
 export async function TRADES_ROUTES(fastify, options) {
+  fastify.get("/", async (request, reply) => {
+    try {
+      const { uuid: clientUuid } = request.user.payload;
+
+      // check client in db
+      const clienteExists = await getClientInfoByUUID(clientUuid);
+
+      if (!clienteExists) {
+        return reply.code(401).send({
+          error: true,
+          message: "Unauthorized!",
+          data: null,
+        });
+      }
+
+      const clientTrades = await prisma.tradeOffer.findMany({
+        where: {
+          OR: [{ sender: clientUuid }, { reciever: clientUuid }],
+        },
+        include: {
+          cards: true,
+        },
+      });
+
+      return {
+        error: false,
+        data: clientTrades,
+      };
+    } catch (error) {
+      return {
+        error: true,
+        message: error.message,
+        errorObj: { ...error },
+        data: null,
+      };
+    }
+  });
+
   fastify.post(
     "/request-trade",
     trades["/request-trade"],
@@ -17,17 +56,17 @@ export async function TRADES_ROUTES(fastify, options) {
         const { uuid: clientUuid } = request.user.payload;
 
         const clienteExists = await prisma.clients.findUnique({
-          where : { 
-            uuid: toUuid
-          }
-        }) 
+          where: {
+            uuid: toUuid,
+          },
+        });
 
-        if(!clienteExists){
+        if (!clienteExists) {
           return reply.code(401).send({
-              error: true,
-              message: "Receiver not found!",
-              data: null
-          })
+            error: true,
+            message: "Receiver not found!",
+            data: null,
+          });
         }
 
         const tradeOffer = await prisma.TradeOffer.create({
